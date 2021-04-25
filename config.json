@@ -1,0 +1,14 @@
+{
+    "Email" : "@gmail.com",
+    "orderUrl" : "https://eveeno.com/public/bookingAX.php",
+    "event" : "",
+    "eventNo" : "",
+    "ammount" : 1,
+    "minRan" : 10,
+    "maxRan" : 11,
+    "cordsY" : 670,
+    "cordsX" : 310,
+    "QRSize" : 8,
+    "template" : "template.pdf"
+
+}
