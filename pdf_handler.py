@@ -14,17 +14,20 @@ class pdfHandler:
 
     def converter(self):
         log("start to convert pdfs to jpg")
+        #Converts the PDF tickets to jpg, as the QRCodes can only be read from image files.
         for ticket_pdf in self.ticket_file_pdf:
             ticket_jpg = convert_from_path(ticket_pdf, 350)
             new_path = ticket_pdf.replace("pdf", "jpg")
             self.ticket_file_jpg.append(new_path)
             for img in ticket_jpg:
                 img.save(new_path, "JPEG")
+            #the pdfs that are no longer needed are deleted
             os.remove(ticket_pdf)
         log("converted all pdf")
         return self.ticket_file_jpg
 
     def getPath(self,ticket_id=0):
+        #Creates a folder with the name of the event in which the tickets will be saved.
         abs_path = os.getcwd()
         media_folder = os.path.join(abs_path,'media')
         media_folder = os.path.join(media_folder,self.config["event"])
@@ -33,6 +36,7 @@ class pdfHandler:
         file_name = f"{self.config['event']} ticket no. {ticket_id}.pdf"
         media_path = os.path.join(media_folder, file_name)
 
+        #Creates a folder containing the ticket template.
         abs_path = os.getcwd()
         input_folder = os.path.join(abs_path,'media')
         input_folder = os.path.join(input_folder,'ticket template')
@@ -44,20 +48,24 @@ class pdfHandler:
     def creatPDF(self,qrCode_file_path):
         log("start to creat the final tickets")
         output_path, template_path = self.getPath()
+        #If no own ticket template has been copied into the folder yet, the user gets the chance to do this now.
         while True:
             print(f"the folder for the ticket template was created: {template_path} copy your template into this folder.")
             input_value = input("Press (y/Y) to continue. ")
             if input_value == "y" or "Y":
                 break
-
+        #loops through all qr codes to place them on the ticket.
         for index, ticket_path in enumerate(qrCode_file_path):
             output_path, template_path = self.getPath(ticket_id=index)
+            #In order to place the qrCode on the ticket, it must first be converted back into a pdf file.
             c = canvas.Canvas('watermark.pdf')
+            #Sets the position of the qrcode on the ticket. More info on GitHub
             c.drawImage(ticket_path, self.config["cordsX"], self.config["cordsY"])
-            #c.drawImage(ticket_path, 100, 300)
             c.save()
             watermark = PdfFileReader(open("watermark.pdf", "rb"))
             output_file = PdfFileWriter()
+            #If the user has not copied his own ticket template into the folder, the standard ticket template will be used. 
+            #The user is informed about this.
             try:
                 input_file = PdfFileReader(open(template_path, "rb"))
             except FileNotFoundError as e:
