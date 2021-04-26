@@ -34,6 +34,7 @@ class emailHandler:
         log("got Inbox content")
 
     def getPath(self,ticket_id=0):
+        #Sets the path where the email attachments are to be saved.
         abs_path = os.getcwd()
         media_folder = os.path.join(abs_path,'media')
         if not os.path.isdir(media_folder):

@@ -8,6 +8,7 @@ import random
 class getTicket:
 
     def __init__(self):
+        #load the variables from the congfig file
         with open("config.json") as config_file:
             self.config = json.load(config_file)
         self.order_url = self.config["orderUrl"]
@@ -22,6 +23,8 @@ class getTicket:
         response = session.get(self.order_url)
         log(f"got response nwith code {response.status_code}")
 
+        #These data are needed to make a legal HTMLRequest
+        #The email address to which the tickets are to be sent and the event ID must be set.
         data = {
             'email': self.email,
             'lang': 'de',
@@ -53,6 +56,8 @@ class getTicket:
         )
 
     def main(self):
+        #To not be banned from Evenoo due to spam
+        #there is always a random time wait after ordering a ticket
         log(f"approximate time to order the tickets: {round((self.config['minRan'] * self.ammount)/60)}min - {round((self.config['maxRan'] * self.ammount)/60)}min")
         for no in range(self.ammount):
             self.order_ticket(no)
@@ -60,8 +65,3 @@ class getTicket:
             if no+1 < self.ammount:
                 log(f"sleep for {sleeptime} seconds \n")
                 time.sleep(sleeptime)
-
-
-
-#ticket = getTicket()
-#ticket.main()
